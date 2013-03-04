@@ -4,7 +4,8 @@ dependencies:
   browser: any
   args: any
   fukiya: 0.0.5
-  box2d: 0.0.7
+  box2d:
+    git: https://github.com/darty-grits/dartbox2d.git
   game_loop: 0.7.0
   vector_math: 0.9.5
   simple_audio:
