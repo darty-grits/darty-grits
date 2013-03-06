@@ -1,5 +1,5 @@
 name: darty_grits
-description: A sample web application
+description: A dart port of gritsgame
 dependencies:
   browser: any
   args: any
