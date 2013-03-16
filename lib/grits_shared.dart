@@ -1,4 +1,4 @@
-library girts_shared;
+library grits_shared;
 
 import 'dart:math' as Math;
 import 'package:box2d/box2d.dart';
@@ -55,4 +55,7 @@ class Settings {
   var type;
   var displayName;
   var userID;
+  var name;
+  var team;
+
 }

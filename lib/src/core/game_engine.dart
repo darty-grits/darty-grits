@@ -1,4 +1,4 @@
-part of girts_shared;
+part of grits_shared;
 
 class GameEngine {
 
@@ -239,27 +239,130 @@ class GameEngine {
     }
   }
 
-  update() {
+  void update() {
+    this.currentTick++;
 
+    // entities
+    for (var i = 0; i < this.entities.length; i++) {
+      var ent = this.entities[i];
+      if (!ent._killed) {
+        ent.update();
+      }
+    }
+
+    // remove all killed entities
+    for (var i = 0; i < this._deferredKill.length; i++) {
+      this.entities.remove(this._deferredKill[i]);
+    }
+    this._deferredKill = [];
+
+    for (var p in this.gPlayers.keys) {
+      this.gPlayers[p].applyInputs();
+    }
+
+    //respawn entities
+    for (var i = 0; i < this._deferredRespawn.length; i++) {
+
+      var pkt = this._deferredRespawn[i];
+      var p = this.namedEntities[pkt.from];
+      var spawnPoint = "Team${p.team}Spawn0";
+      var ent = this.getEntityByName(spawnPoint);
+
+      if(!ent) {
+        print("Did not find spawn point");
+        return;
+      }
+
+      p.resetStats();
+      p.centerAt(ent.pos);
+      var wep_pktt = { 'from': p.name,
+                       'wep0': pkt.wep0,
+                       'wep1': pkt.wep1,
+                       'wep2': pkt.wep2
+      };
+
+      p.on_setWeapons(wep_pktt);
+      p.toAll.q_setWeapons(wep_pktt);
+      p.toAll.q_setPosition(ent.pos);
+
+
+      print("Respawned entity ${p.name} at location ${p.pos.x}, ${p.pos.y}");
+    }
+    this._deferredRespawn.length=0;
   }
 
-  updatePhysics() {
+  void updatePhysics() {
+    gPhysicsEngine.update();
 
+    for (var p in this.gPlayers.keys) {
+      var plyr = this.gPlayers[p];
+      var pPos = plyr.physBody.GetPosition();
+      plyr.pos.x = pPos.x;
+      plyr.pos.y = pPos.y;
+    }
   }
 
   dealDmg(fromObj, toPlayer, amt) {
+    if(!IS_SERVER)return;
 
+    var objOwner = fromObj.owningPlayer;
+    if (toPlayer == null || toPlayer._killed) return false;
+
+    if(toPlayer.takeDamage) {
+      toPlayer.takeDamage(amt);
+    }
+
+    if(toPlayer.health <=0) {
+      this.notifyPlayers("${toPlayer.displayName} was killed by ${objOwner.displayName}");
+      objOwner.numKills++;
+    }
   }
 
   on_collision(msg) {
+    var ent0 = this.getEntityByName(msg.ent0);
+    var ent1 = this.getEntityByName(msg.ent1);
 
+    if(ent0 == null) ent0 = this.getEntityById(msg.ent0);
+    if(ent1 == null) ent1 = this.getEntityById(msg.ent1);
+
+    var body0 = null;
+    var body1 = null;
+
+    if(ent0 != null)
+      body0 = ent0.physBody;
+    if(ent1 != null)
+      body1 = ent1.physBody;
+
+
+    this.onCollisionTouch(body0,body1,msg.impulse);
   }
 
   spawnPlayer(id, teamID, spname, typename, userID, displayName) {
 
+    print("spawn $id at $spname");
+    var ent = this.getEntityByName(spname);
+    if(ent == null)
+    {
+      print("could not find ent $spname");
+      return -1;
+    }
+
+    var s = new Settings();
+    s.name = "!$id";
+    s.team = teamID;
+    s.userID = userID;
+    s.displayName = displayName;
+
+    this.gPlayers[id] = this.spawnEntity(typename, ent.pos.x, ent.pos.y, s);
+    this.gPlayers[id].health = 0;
+    return this.gPlayers[id];
   }
 
   unspawnPlayer(id) {
+    if(this.gPlayers.containsKey(id)) {
+      this.notifyPlayers("${this.gPlayers[id].displayName} disconnected.");
+    }
 
+    this.removeEntity(this.gPlayers[id]);
   }
 }
