@@ -44,3 +44,15 @@ part 'src/weapon_instances/landmine_disk.dart';
 part 'src/weapon_instances/shield.dart';
 part 'src/weapon_instances/simple_projectile.dart';
 part 'src/weapon_instances/sword.dart';
+
+// Global instances. Note, we can refactor this when the time is right.
+var gGameEngine;
+var gPhysicsEngine;
+bool IS_SERVER = false;
+var Server;
+
+class Settings {
+  var type;
+  var displayName;
+  var userID;
+}
