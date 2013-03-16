@@ -1,3 +1,5 @@
+part of girts_shared;
+
 class Constants {
   static const int GAME_UPDATES_PER_SEC = 10;
   static const double GAME_LOOP_HZ = 1.0 / 10.0;
