@@ -1,4 +1,4 @@
-part of girts_shared;
+part of grits_shared;
 
 class Constants {
   static const int GAME_UPDATES_PER_SEC = 10;
