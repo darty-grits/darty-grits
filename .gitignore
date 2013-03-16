@@ -1,1 +1,9 @@
 .swp
+*packages/
+*.idea
+*.iml
+*.lock
+web/css/packages
+web/img/packages
+web/packages
+web/sound/packages
