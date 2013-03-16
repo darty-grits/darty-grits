@@ -14,8 +14,8 @@ class GameEngine {
   int spawnCounter = 0;
 
   int cellSize = 64;
-  int timeSinceGameUpdate = 0;
-  int timeSincePhysicsUpdate = 0;
+  double timeSinceGameUpdate = 0.0;
+  double timeSincePhysicsUpdate = 0.0;
   var clock = null;
 
   List _deferredKill = [];
@@ -28,7 +28,7 @@ class GameEngine {
   Map gPlayers = {};
   int fps = 0;
   int currentTick = 0;
-  int lastFpsSec = 0;
+  double lastFpsSec = 0.0;
 
   GameEngine() {
     // TODO: add the real timer class
@@ -113,39 +113,130 @@ class GameEngine {
   }
 
   List getEntitiesByType(typeName) {
-//
-//    var entityClass = Factory.nameClassMap[typeName];
-//    var a = [];
-//    for (var i = 0; i < this.entities.length; i++) {
-//      var ent = this.entities[i];
-//      if (ent instanceof entityClass && !ent._killed) {
-//        a.add(ent);
-//      }
-//    }
-//    return a;
+
+    //var entityClass = Factory.nameClassMap[typeName];
+    var a = [];
+    for (var i = 0; i < this.entities.length; i++) {
+      var ent = this.entities[i];
+      if (ent.runtimeType.name == typeName && !ent._killed) {
+        a.add(ent);
+      }
+    }
+    return a;
   }
 
-  nextSpawnId() {
-
-  }
+  nextSpawnId() => this.spawnCounter++;
 
   var onSpawned;
   var onUnspawned;
 
   spawnEntity(typename, x, y, settings) {
 
+    var entityClass = Factory.nameClassMap[typename];
+
+    var es = settings == null ? new Settings() : settings;
+    es.type = typename;
+
+    var ent = new(entityClass)(x, y, es);
+    var msg = "SPAWNING $typename WITH ID ${ent.id}";
+
+    if (ent.name) {
+      msg = "$msg WITH NAME ${ent.name}";
+    }
+
+    if (es.displayName) {
+      msg = "$msg WITH displayName ${es.displayName}";
+    }
+
+    if (es.userID) {
+      msg = "$msg WITH userID ${es.userID}";
+    }
+
+    if (es.displayName) {
+      //Logger.log(msg);
+      // TODO: replace with real logging
+      print(msg);
+    }
+
+    gGameEngine.entities.push(ent);
+
+    if (ent.name) {
+      gGameEngine.namedEntities[ent.name] = ent;
+    }
+
+    gGameEngine.onSpawned(ent);
+
+    if (ent.type == "Player") {
+      this.gPlayers[ent.name] = ent;
+    }
+    return ent;
   }
 
   respawnEntity(respkt) {
 
+    if(IS_SERVER) {
+      var player = this.namedEntities[respkt.from];
+      if(!player)
+      {
+        //Logger.log("player.id = " + respkt.from  + " Not found for respawn");
+        print("player.id = ${respkt.from} Not found for respawn");
+        return;
+      }
+
+      this._deferredRespawn.add(respkt);
+
+    }
   }
 
   removeEntity(ent) {
+    if (!ent) return;
 
+    this.onUnspawned(ent);
+
+    // Remove this entity from the named entities
+    if (ent.name) {
+      this.namedEntities.remove(ent.name);
+      this.gPlayers.remove(ent.name);
+    }
+
+    // We can not remove the entity from the entities[] array in the midst
+    // of an update cycle, so remember all killed entities and remove
+    // them later.
+    // Also make sure this entity doesn't collide anymore and won't get
+    // updated or checked
+    ent._killed = true;
+
+    this._deferredKill.add(ent);
   }
 
   run() {
+    this.fps++;
+    GlobalTimer.step();
 
+    var timeElapsed = this.clock.tick();
+    this.timeSinceGameUpdate += timeElapsed;
+    this.timeSincePhysicsUpdate += timeElapsed;
+
+    while (this.timeSinceGameUpdate >= Constants.GAME_LOOP_HZ &&
+      this.timeSincePhysicsUpdate >= Constants.PHYSICS_LOOP_HZ) {
+      // JJG: We should to do a physics update immediately after a game update to avoid
+      //      the case where we draw after a game update has run but before a physics update
+      this.update();
+      this.updatePhysics();
+      this.timeSinceGameUpdate -= Constants.GAME_LOOP_HZ;
+      this.timeSincePhysicsUpdate -= Constants.PHYSICS_LOOP_HZ;
+    }
+
+    while (this.timeSincePhysicsUpdate >= Constants.PHYSICS_LOOP_HZ) {
+      // JJG: Do extra physics updates
+      this.updatePhysics();
+      this.timeSincePhysicsUpdate -= Constants.PHYSICS_LOOP_HZ;
+    }
+
+    if(this.lastFpsSec < this.currentTick/Constants.GAME_UPDATES_PER_SEC && this.currentTick % Constants.GAME_UPDATES_PER_SEC == 0) {
+      this.lastFpsSec = this.currentTick / Constants.GAME_UPDATES_PER_SEC;
+      this.fps = 0;
+    }
   }
 
   update() {
