@@ -1,4 +1,4 @@
-library girts_shared;
+library grits_shared;
 
 import 'dart:math' as Math;
 import 'package:box2d/box2d.dart';
