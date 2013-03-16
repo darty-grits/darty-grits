@@ -55,4 +55,7 @@ class Settings {
   var type;
   var displayName;
   var userID;
+  var name;
+  var team;
+
 }
