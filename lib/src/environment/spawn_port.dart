@@ -1,5 +1,5 @@
 part of grits_shared;
 
-class SpawnPort {
+class SpawnPort extends Entity {
 
 }

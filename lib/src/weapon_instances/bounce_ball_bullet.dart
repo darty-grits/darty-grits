@@ -1,5 +1,5 @@
 part of grits_shared;
 
-class BounceBallBulletInstance {
+class BounceBallBulletInstance extends WeaponInstance {
 
 }

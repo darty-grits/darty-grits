@@ -1,5 +1,5 @@
 part of grits_shared;
 
-class Spawner {
+class Spawner extends Entity {
 
 }

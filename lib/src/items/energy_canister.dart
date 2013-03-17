@@ -1,5 +1,5 @@
 part of grits_shared;
 
-class EnergyCanister {
+class EnergyCanister extends Entity {
 
 }
