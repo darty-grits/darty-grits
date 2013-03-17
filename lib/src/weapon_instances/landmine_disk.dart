@@ -1,5 +1,5 @@
 part of grits_shared;
 
-class LandmineDiskInstance {
+class LandmineDiskInstance extends WeaponInstance {
 
 }

@@ -1,5 +1,5 @@
 part of grits_shared;
 
-class HealthCanister {
+class HealthCanister extends Entity {
 
 }
