@@ -1,5 +1,5 @@
 part of grits_shared;
 
-class ShieldInstance {
+class ShieldInstance extends WeaponInstance {
 
 }

@@ -1,5 +1,5 @@
 part of grits_shared;
 
-class Teleporter {
+class Teleporter extends Entity {
 
 }
