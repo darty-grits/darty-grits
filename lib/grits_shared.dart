@@ -7,6 +7,7 @@ import 'package:box2d/box2d.dart';
 part 'src/core/constants.dart';
 part 'src/core/entity.dart';
 part 'src/core/game_engine.dart';
+part 'src/core/grits_contact_listener.dart';
 part 'src/core/physics_engine.dart';
 part 'src/core/player.dart';
 part 'src/core/tile_map.dart';

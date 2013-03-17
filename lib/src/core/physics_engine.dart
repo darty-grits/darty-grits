@@ -1,8 +1,4 @@
-library physics_engine;
-import 'package:box2d/box2d.dart';
-import 'dart:math' as Math;
-
-part 'grits_contact_listener.dart';
+part of girts_shared;
 
 class PhysicsEngine {
 
