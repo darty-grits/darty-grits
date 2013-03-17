@@ -31,8 +31,7 @@ class GameEngine {
   double lastFpsSec = 0.0;
 
   GameEngine() {
-    // TODO: add the real timer class
-    //clock = new TimerClass();
+    clock = new TimerClass();
   }
 
   void setup() {
@@ -130,14 +129,42 @@ class GameEngine {
   var onSpawned;
   var onUnspawned;
 
+  _getConstructedClass(typename, x, y, settings) {
+    // TODO: find a better way to handle this. Maybe using factory that implements Entity
+    switch (typename) {
+      case "Spawner": return new Spawner(x, y, settings);
+      case "SpawnerPort": return new SpawnerPort(x, y, settings);
+      case "Teleporter": return new Teleporter(x, y, settings);
+      case "EnergyCanister": return new EnergyCanister(x, y, settings);
+      case "HealthCanister": return new HealthCanister(x, y, settings);
+      case "QuadDamage": return new QuadDamage(x, y, settings);
+      case "BounceBallGun": return new BounceBallGun(x, y, settings);
+      case "ChainGun": return new ChainGun(x, y, settings);
+      case "Landmine": return new Landmine(x, y, settings);
+      case "MachineGun": return new MachineGun(x, y, settings);
+      case "RocketLauncher": return new RocketLauncher(x, y, settings);
+      case "Shield": return new Shield(x, y, settings);
+      case "ShotGun": return new ShotGun(x, y, settings);
+      case "Sword": return new Sword(x, y, settings);
+      case "Thrusters": return new Thrusters(x, y, settings);
+      case "BounceBallBulletInstance": return new BounceBallBulletInstance(x, y, settings);
+      case "LandmineDiskInstance": return new LandmineDiskInstance(x, y, settings);
+      case "ShieldInstance": return new ShieldInstance(x, y, settings);
+      case "SimpleProjectileInstance": return new SimpleProjectileInstance(x, y, settings);
+      case "SwordInstance": return new SwordInstance(x, y, settings);
+    }
+  }
+
   spawnEntity(typename, x, y, settings) {
 
-    var entityClass = Factory.nameClassMap[typename];
+    //var entityClass = Factory.nameClassMap[typename];
 
     var es = settings == null ? new Settings() : settings;
     es.type = typename;
 
-    var ent = new(entityClass)(x, y, es);
+    //var ent = new(entityClass)(x, y, es);
+    var ent = _getConstructedClass(typename, x, y, es);
+
     var msg = "SPAWNING $typename WITH ID ${ent.id}";
 
     if (ent.name) {
