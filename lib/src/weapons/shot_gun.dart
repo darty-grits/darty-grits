@@ -1,4 +1,4 @@
-part of girts_shared;
+part of grits_shared;
 
 class ShotGun {
 
