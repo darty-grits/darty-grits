@@ -7,15 +7,6 @@ class TileMapViewRect {
   var h = 512;
 }
 
-class TileMapTiles {
-  int numYTiles = 100;
-  int numXTiles = 100;
-  int tileSizeX = 64;
-  int tileSizeY = 64;
-  int pixelSizeX = 64;
-  int pixelSizeY = 64;
-}
-
 class TileMap {
   Logger logger = new Logger("TileMap");
   GritsMap curMapData = null;
@@ -159,7 +150,7 @@ class TileMap {
 
     pkt.img = tileSets[i].image;
     var localIdx = tileIndex - tileSets[i].firstgid;
-    var lTileX = (localIdx % tileSets[i].numYTiles).floor();
+    var lTileX = (localIdx % tileSets[i].numXTiles).floor();
     var lTileY = (localIdx / tileSets[i].numYTiles).floor();    //TODO: Bug it?
     pkt.px = (lTileX * curMapData.tilewidth);
     pkt.py = (lTileY * curMapData.tileheight);
