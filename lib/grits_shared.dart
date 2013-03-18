@@ -1,6 +1,7 @@
 library grits_shared;
 
 import 'dart:math' as Math;
+import 'package:logging/logging.dart';
 import 'package:box2d/box2d.dart';
 
 // core parts
@@ -25,6 +26,10 @@ part 'src/items/health_canister.dart';
 part 'src/items/quad_damage.dart';
 
 // maps parts
+part 'src/maps/entities/map.dart';
+part 'src/maps/entities/layer.dart';
+part 'src/maps/entities/object.dart';
+part 'src/maps/entities/tileset.dart';
 part 'src/maps/map1.dart';
 part 'src/maps/small_map1.dart';
 
