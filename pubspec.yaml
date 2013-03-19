@@ -1,8 +1,15 @@
 name: darty_grits
 description: A dart port of gritsgame
 dependencies:
-  browser: any
-  args: any
+  unittest: '>=0.4.1 <0.4.2'
+  browser: '>=0.4.1 <0.4.2'
+  bot: '>=0.15.0 <0.16.0'
+  meta: '>=0.4.1 <0.4.2'
+  html5lib: '>=0.4.0 <0.4.1'
+  args: '>=0.4.1 <0.4.2'
+  logging: '>=0.4.1 <0.4.2'
+  pathos: '>=0.4.1 <0.4.2'
+  source_maps: '>=0.4.0 <0.4.1'
   fukiya:
     git: https://github.com/Daegalus/fukiya.git
   box2d:
