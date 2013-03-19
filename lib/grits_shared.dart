@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:box2d/box2d.dart';
 
 // core parts
+part 'src/core/game_timer.dart';
 part 'src/core/constants.dart';
 part 'src/core/entity.dart';
 part 'src/core/game_engine.dart';
