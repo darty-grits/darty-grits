@@ -17,7 +17,7 @@ part 'src/core/weapon.dart';
 part 'src/core/weapon_instance.dart';
 
 // environment parts
-part 'src/environment/spawn_port.dart';
+part 'src/environment/spawn_point.dart';
 part 'src/environment/spawner.dart';
 part 'src/environment/teleporter.dart';
 
